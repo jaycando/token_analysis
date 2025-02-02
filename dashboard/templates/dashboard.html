@@ -1,0 +1,53 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Token Importance Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: auto; }
+        .plot { margin-bottom: 40px; }
+        h1, h2, h3 { color: #333; }
+        a { text-decoration: none; color: #007BFF; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Token Importance Dashboard</h1>
+    <p>
+        <a href="{{ url_for('reset') }}">새 CSV 파일 업로드</a>
+    </p>
+    <form method="get" action="/">
+        <label for="text_id">텍스트 선택 (text_id):</label>
+        <select name="text_id" id="text_id" onchange="this.form.submit()">
+            {% for tid in text_ids %}
+                <option value="{{ tid }}" {% if tid == selected_text_id %}selected{% endif %}>{{ tid }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if text_data %}
+        <h2>Text ID: {{ selected_text_id }}</h2>
+        <p><strong>문장:</strong> {{ text_data.text }}</p>
+        
+        <div class="plot">
+            <h3>1. 토큰별 클래스 중요도 히트맵</h3>
+            <img src="data:image/png;base64,{{ heatmap_img }}" alt="Heatmap">
+        </div>
+        
+        <div class="plot">
+            <h3>2. 평균 토큰 중요도</h3>
+            <img src="data:image/png;base64,{{ bar_chart_img }}" alt="Average Token Importance">
+        </div>
+        
+        <div class="plot">
+            <h3>3. 클래스 예측 확률</h3>
+            <img src="data:image/png;base64,{{ prob_chart_img }}" alt="Class Probabilities">
+        </div>
+    {% else %}
+        <p>데이터가 없습니다.</p>
+    {% endif %}
+</div>
+</body>
+</html>
